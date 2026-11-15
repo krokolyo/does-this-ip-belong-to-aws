@@ -18,6 +18,16 @@ def download_aws_ip_set():
 # Find ip given IP belongs to any AWS Service
 def find_aws_ip(aws_ip_range_data, ip_to_find):
   """Finds the AWS IP range that contains the given IP address."""
-  return [prefix for prefix in aws_ip_range_data if ipaddress.ip_address(ip_to_find) in ipaddress.ip_network(prefix['ip_prefix'])]
+  matches = []
+  ip_to_check = ipaddress.ip_address(ip_to_find)
+
+  for prefix in aws_ip_range_data:
+    network = ipaddress.ip_network(prefix['ip_prefix'])
+    if ip_to_check in network:
+      range_data = dict(prefix)
+      range_data['ip_count'] = network.num_addresses
+      matches.append(range_data)
+
+  return matches
 
 sys.stdout.write(json.dumps(find_aws_ip(download_aws_ip_set(), sys.argv[1]),indent=2))
