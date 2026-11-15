@@ -18,6 +18,7 @@ def download_aws_ip_set():
 # Find ip given IP belongs to any AWS Service
 def find_aws_ip(aws_ip_range_data, ip_to_find):
   """Finds the AWS IP ranges that contain the given IP address and includes the first/last IP in the chosen range."""
+  """Finds the AWS IP range that contains the given IP address."""
   matches = []
   ip_to_check = ipaddress.ip_address(ip_to_find)
 
@@ -27,6 +28,7 @@ def find_aws_ip(aws_ip_range_data, ip_to_find):
       range_data = dict(prefix)
       range_data['first_ip'] = str(network.network_address)
       range_data['last_ip'] = str(network.broadcast_address)
+      range_data['ip_count'] = network.num_addresses
       matches.append(range_data)
 
   return matches
